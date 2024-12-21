@@ -62,7 +62,13 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>32.0.0-android</version>  <!-- 或者使用你所需要的版本 -->
+			<version>32.0.0-android</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.30</version>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 

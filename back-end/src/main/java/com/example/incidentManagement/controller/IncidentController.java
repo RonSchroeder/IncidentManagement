@@ -7,6 +7,8 @@ import com.example.incidentManagement.validation.CreateGroup;
 import com.example.incidentManagement.validation.DeleteGroup;
 import com.example.incidentManagement.validation.UpdateGroup;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +34,8 @@ public class IncidentController {
 
     // Retrieve all incidents
     @PostMapping("/queryAllIncidents")
-    public Result<List<IncidentEntity>> queryAllIncidents() {
-        return Result.success(incidentService.queryAllIncidents());
+    public Result<Page<IncidentEntity>> queryAllIncidents(Pageable pageable) {
+        return Result.success(incidentService.queryAllIncidents(pageable));
     }
 
     // Modify an incident

@@ -2,49 +2,46 @@ package com.example.incidentManagement.service.impl;
 
 import com.example.incidentManagement.entity.IncidentEntity;
 import com.example.incidentManagement.exception.CustomException;
+import com.example.incidentManagement.repository.IncidentRepository;
 import com.example.incidentManagement.service.IncidentService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class IncidentServiceImpl implements IncidentService {
-    private final List<IncidentEntity> incidents = new CopyOnWriteArrayList<>();
-    private final AtomicLong idCounter = new AtomicLong(1);
+    @Autowired
+    private IncidentRepository incidentRepository;
 
     @Override
     public IncidentEntity createIncident(IncidentEntity incident) {
-        incident.setId(idCounter.getAndIncrement());
-        incidents.add(incident);
-        return incident;
+        return incidentRepository.save(incident);
     }
 
     @Override
-    public List<IncidentEntity> queryAllIncidents() {
-        return incidents;
+    public Page<IncidentEntity> queryAllIncidents(Pageable pageable) {
+        return incidentRepository.findAll(pageable);
     }
 
     @Override
     public IncidentEntity modifyIncident(Long id, IncidentEntity incident) {
-        for (IncidentEntity currentIncident : incidents) {
-            if (Objects.equals(currentIncident.getId(), id)) {
-                BeanUtils.copyProperties(incident, currentIncident, "id");
-                return incident;
-            }
-        }
-        throw new CustomException("IncidentEntity not found");
+        return incidentRepository.findById(id).map(currentIncident -> {
+            BeanUtils.copyProperties(incident, currentIncident, "id");
+            return incidentRepository.save(incident);
+        }).orElseThrow(() -> new CustomException("Incident not found"));
     }
 
     @Override
     public void deleteIncident(List<Long> ids) {
         for (Long id : ids) {
-            if (!incidents.removeIf(incident -> Objects.equals(id, incident.getId()))) {
-                throw new CustomException("IncidentEntity not found");
+            if (!incidentRepository.existsById(id)) {
+                throw new CustomException("Incident not found");
             }
+            incidentRepository.deleteById(id);
         }
     }
 }
