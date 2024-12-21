@@ -44,6 +44,10 @@
           <th>Title</th>
           <th>Description</th>
           <th>Status</th>
+          <th>Created By</th>
+          <th>Created At</th>
+          <th>Updated By</th>
+          <th>Updated At</th>
         </tr>
       </thead>
       <tbody>
@@ -70,6 +74,10 @@
               {{ incident.status }}
             </span>
           </td>
+          <td>{{ incident.createdBy || 'N/A' }}</td>
+          <td>{{ formatDate(incident.createdAt) }}</td>
+          <td>{{ incident.updatedBy || 'N/A' }}</td>
+          <td>{{ formatDate(incident.updatedAt) }}</td>
         </tr>
       </tbody>
     </table>
@@ -174,16 +182,27 @@ export default {
     },
   },
   methods: {
-    queryAllIncidents() {
-      axios
-        .post("http://localhost:8080/api/incidents/queryAllIncidents")
-        .then((response) => {
-          this.incidents = response.data.data;
-        })
-        .catch((error) => {
-          console.error("Error fetching incidents:", error);
-        });
-    },
+    queryAllIncidents(page = 0, size = 20) {
+    axios
+      .post("http://localhost:8080/api/incidents/queryAllIncidents", {
+        page: page,
+        size: size
+      })
+      .then((response) => {
+        const data = response.data.data;
+        this.incidents = data.content; // 提取 content 数据
+        this.pagination = {
+          pageNumber: data.number,
+          pageSize: data.size,
+          totalPages: data.totalPages,
+          totalElements: data.totalElements
+        }; // 更新分页信息
+      })
+      .catch((error) => {
+        console.error("Error fetching incidents:", error);
+      });
+    }
+    ,
     toggleSelectAll(event) {
       if (event.target.checked) {
         this.selectedIds = this.incidents.map((incident) => incident.id);
@@ -257,6 +276,17 @@ export default {
           console.error("Error submitting form:", error);
         });
     },
+    formatDate(date) {
+      if (!date) return "N/A";
+      return new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      }).format(new Date(date));
+    }
   },
   mounted() {
     this.queryAllIncidents();

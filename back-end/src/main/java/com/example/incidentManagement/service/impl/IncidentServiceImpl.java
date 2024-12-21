@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -19,6 +20,10 @@ public class IncidentServiceImpl implements IncidentService {
 
     @Override
     public IncidentEntity createIncident(IncidentEntity incident) {
+        incident.setCreatedBy("System"); // 或从上下文中获取用户信息
+        incident.setCreatedAt(LocalDateTime.now());
+        incident.setUpdatedBy("System");
+        incident.setUpdatedAt(LocalDateTime.now());
         return incidentRepository.save(incident);
     }
 
@@ -31,6 +36,8 @@ public class IncidentServiceImpl implements IncidentService {
     public IncidentEntity modifyIncident(Long id, IncidentEntity incident) {
         return incidentRepository.findById(id).map(currentIncident -> {
             BeanUtils.copyProperties(incident, currentIncident, "id");
+            incident.setUpdatedBy("System"); // 或从上下文中获取用户信息
+            incident.setUpdatedAt(LocalDateTime.now());
             return incidentRepository.save(incident);
         }).orElseThrow(() -> new CustomException("Incident not found"));
     }

@@ -1,0 +1,216 @@
+{
+  "info": {
+    "name": "Incident Management API - Complete",
+    "description": "Comprehensive Postman collection for testing Incident Management API, including boundary values and invalid data cases.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Incident - Valid Data",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"Test Incident\",\n    \"description\": \"This is a valid test incident\",\n    \"status\": \"OPEN\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/incidents/createIncident",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "incidents", "createIncident"]
+        }
+      }
+    },
+    {
+      "name": "Create Incident - Missing Title",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"description\": \"Missing title test\",\n    \"status\": \"OPEN\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/incidents/createIncident",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "incidents", "createIncident"]
+        }
+      }
+    },
+    {
+      "name": "Create Incident - Title Exceeds Max Length",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"" + "A".repeat(101) + "\",\n    \"description\": \"This title exceeds the maximum length\",\n    \"status\": \"OPEN\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/incidents/createIncident",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "incidents", "createIncident"]
+        }
+      }
+    },
+    {
+      "name": "Create Incident - Invalid Status",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"Test Incident\",\n    \"description\": \"Invalid status test\",\n    \"status\": \"INVALID_STATUS\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/incidents/createIncident",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "incidents", "createIncident"]
+        }
+      }
+    },
+    {
+      "name": "Query All Incidents",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/incidents/queryAllIncidents",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "incidents", "queryAllIncidents"]
+        }
+      }
+    },
+    {
+      "name": "Modify Incident - Valid Data",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"id\": 1,\n    \"title\": \"Updated Incident\",\n    \"description\": \"This incident has been updated\",\n    \"status\": \"IN_PROGRESS\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/incidents/modifyIncident",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "incidents", "modifyIncident"]
+        }
+      }
+    },
+    {
+      "name": "Modify Incident - Non-Existent ID",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"id\": 999,\n    \"title\": \"Non-existent Incident\",\n    \"description\": \"This incident does not exist\",\n    \"status\": \"IN_PROGRESS\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/incidents/modifyIncident",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "incidents", "modifyIncident"]
+        }
+      }
+    },
+    {
+      "name": "Delete Incident - Valid ID",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"id\": 1\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/incidents/deleteIncident",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "incidents", "deleteIncident"]
+        }
+      }
+    },
+    {
+      "name": "Delete Incident - Non-Existent ID",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"id\": 999\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/incidents/deleteIncident",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "incidents", "deleteIncident"]
+        }
+      }
+    }
+  ]
+}

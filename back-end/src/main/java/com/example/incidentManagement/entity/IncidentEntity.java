@@ -5,10 +5,15 @@ import com.example.incidentManagement.validation.CreateGroup;
 import com.example.incidentManagement.validation.DeleteGroup;
 import com.example.incidentManagement.validation.UpdateGroup;
 import com.example.incidentManagement.validation.ValidStatus;
+import com.google.common.base.MoreObjects;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "incidents", indexes = {
@@ -34,6 +39,22 @@ public class IncidentEntity {
     @NotNull(message = "Status must not be null", groups = {CreateGroup.class, UpdateGroup.class})
     @ValidStatus(groups = {CreateGroup.class, UpdateGroup.class})
     private String status;
+
+    @Column(name = "created_by", length = 50, nullable = false)
+    private String createdBy;
+
+    // 创建时间，自动设置当前时间
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_by", length = 50, nullable = true)
+    private String updatedBy;
+
+    // 更新时间，自动更新为当前时间
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    private LocalDateTime updatedAt;
 
     public Long getId() {
         return id;
@@ -67,13 +88,49 @@ public class IncidentEntity {
         this.status = status;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public String toString() {
-        return com.google.common.base.MoreObjects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("id", id)
                 .add("title", title)
                 .add("description", description)
                 .add("status", status)
+                .add("createdBy", createdBy)
+                .add("createdAt", createdAt)
+                .add("updatedBy", updatedBy)
+                .add("updatedAt", updatedAt)
                 .toString();
     }
 }
